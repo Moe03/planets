@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Link from 'next/link';
-import Nav from '../planets/Nav';
 import React, {useState} from 'react';
 
 export default function Home(props) {
@@ -14,7 +13,7 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main >
+      <main className='overflow-x-hidden text-lg md:text-xl'>
 
         {props.planets.earth}
        

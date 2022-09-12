@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as TWEEN from 'tween'
-
+import Image from 'next/image';
 
 
 const earthSize = 10;
 
 const planets = [
-  {name: 'mercury', size: earthSize / 3, positionX: -200, texture: 'mercury.jpg', zoom: 30},
-  {name: 'venus', size: earthSize * 0.944, positionX: -100, texture: 'venus.jpg'},
+  {name: 'mercury', size: earthSize / 3, positionX: -400, texture: 'mercury.jpg', zoom: 15},
+  {name: 'venus', size: earthSize * 0.944, positionX: -200, texture: 'venus.jpg'},
   {name: 'earth', size: earthSize, positionX: 0, texture: 'earth.jpg'},
-  {name: 'mars', size: earthSize / 2, positionX: 100, texture: 'mars.jpg'},
-  {name: 'jupiter', size: earthSize * 11, positionX: 300, texture: 'jupiter.jpg', zoom: 400},
-  {name: 'saturn', size: earthSize * 9, positionX: 600, texture: 'saturn.jpg', zoom: 400},
-  {name: 'uranus', size: earthSize * 4, positionX: 800, texture: 'uranus.jpg', zoom: 200},
-  {name: 'neptune', size: earthSize * 3, positionX: 950, texture: 'neptune.jpg', zoom: 200},
+  {name: 'mars', size: earthSize / 2, positionX: 200, texture: 'mars.jpg'},
+  {name: 'jupiter', size: earthSize * 11, positionX: 500, texture: 'jupiter.jpg', zoom: 400},
+  {name: 'saturn', size: 1, positionX: 1000, texture: 'earth.jpg', zoom: 400},
+  {name: 'uranus', size: earthSize * 4, positionX: 1500, texture: 'uranus.jpg', zoom: 200},
+  {name: 'neptune', size: earthSize * 3, positionX: 1800, texture: 'neptune.jpg', zoom: 200},
 ]
 
+const planetsArray = planets.map((planet) => planet.name);
+
 function Earth() {
+
+  const [currentPlanet, setCurrentPlanet] = useState('earth');
+  const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
         const scene = new THREE.Scene()
@@ -196,18 +202,43 @@ function Earth() {
             )
         
           }
-        }   
+        }     
 
+        let saturnmodel;
+  
+        new GLTFLoader().load('/saturn.glb', (gltf) => {
+          gltf.scene.scale.set(0.12, 0.12, 0.12); 
+          gltf.scene.position.set(1000, 0, 0); 
+          const root = gltf.scene;
+          root.name = 'saturngltf'
+          saturnmodel = root;
+          scene.add(root);
+          if (saturnmodel) saturnmodel.rotation.x = 0.2;
+
+        })
+  
+
+          // loader.load( '/saturn.glb', function ( gltf ) {
+
+          //   gltf.scene.scale.set(0.12, 0.12, 0.12); 
+          //   const root = gltf.scene;
+          //   root.name = 'saturngltf'
+          //   scene.add(root);
+            
+          // }, undefined, function ( error ) {
+
+          //   console.error( error );
+
+          // } );
+
+        console.log(scene.children)
         let oldobject = planetsObjects.filter(obj => Object.keys(obj).some(name => obj[name] == 'earth'))[0].object;
         
-        console.log(planetsObjects)
         function animate(){
           
           requestAnimationFrame(animate);
 
-          
           for(let i = 0; i < planetsObjects.length; i++){
-         
             if(planetsObjects[i].planet){
              planetsObjects[i].object.rotation.x += .0000001
              planetsObjects[i].object.rotation.y += .001; 
@@ -216,31 +247,70 @@ function Earth() {
         
           earthCloudsScene.rotation.x += .0008;
           earthCloudsScene.rotation.y += .001; 
-        
+ 
+          if (saturnmodel) saturnmodel.rotation.y += 0.001;
         
           controls.update()
           TWEEN.update();
           renderer.render(scene, camera);
         }
-        
-        
+      
         animate();
   
     }, []);
+
+    const nextValue = planetsArray.indexOf(currentPlanet) < planetsArray.length - 1 ? planetsArray[planetsArray.indexOf(currentPlanet) + 1] : currentPlanet;
+    const backValue =  planetsArray.indexOf(currentPlanet) != 0 ? planetsArray[planetsArray.indexOf(currentPlanet) - 1] : currentPlanet;
     
   return (
     <>
-    <canvas id='canvas'>Earth</canvas>
-    <div className='fixed w-full h-[20vh] bottom-0 bg-white'>
-        <button id='venus' className='navbtns'>Venus</button>
-        <button id='mercury' className='navbtns'>Mercury</button>
-        <button id='earth' className='navbtns'>earth</button>
-        <button id='mars' className='navbtns'>Mars</button>
-        <button id='jupiter' className='navbtns'>Jupiter</button>
-        <button id='saturn' className='navbtns'>Saturn</button>
-        <button id='uranus' className='navbtns'>Uranus</button>
-        <button id='neptune' className='navbtns'>Neptune</button>
+    <div className={`${isActive ? 'translate-y-[0vh]' : 'translate-y-[-100vh]'} w-[100vw] h-[100vh] fixed z-50 bg-black duration-700 transition-all`}>
+          <div className='w-full h-full flex flex-col justify-center items-center'>
+            <div className='grid grid-cols-2 lg:grid-cols-4 gap-1 w-[80%] lg:gap-5 lg:w-[50%] mx-auto text-white mb-5'>
+            {planets.map((planet) => 
+            
+                  <button onClick={() => {setCurrentPlanet(planet.name); setIsActive(false);}} id={planet.name} className='navbtns text-white relative flex flex-col jusitfy-center items-center'>
+                    <div className='relative w-24 h-24'>
+                      <Image id={planet.name} layout='fill' src={`/${planet.name}icon.svg`} />
+                    </div>
+                    <p className={planet.name == currentPlanet ? 'text-white font-bold' : 'text-gray-400' +  ` text-white w-full`}>{planet.name}</p>
+                  </button>
+        
+              )}
+              <div className='w-full text-center col-span-full mt-5'>
+                <a href={ '/about'} className='inline mr-3 underline'>About</a>
+                <a target={'_blank'} href={'https://github.com/moe03'} className='inline ml-3 underline'>Github</a>
+                
+                <button className='block text-center mx-auto mt-5'>Designed and developed my <span className=' underline'>Moe</span></button>
+              </div>
+    
+            </div>
+          </div>
+
+   
     </div>
+    <div className='relative'>
+          <div className='fixed w-full bg-white z-20 items-center justify-center hidden lg:flex'>
+            {planets.map((planet) => 
+                <button onClick={() => setCurrentPlanet(planet.name)} id={planet.name} className={`${planet.name == currentPlanet ? 'text-black': 'text-gray-500'} navbtns mx-2 px-2 py-2 hover:shadow hover:bg-gray-200`}>{planet.name}</button>
+     
+            )}
+              
+                    <button className='relative w-6 h-6' onClick={() => setIsActive(true)}><Image layout='fill' src='/menu.svg'/></button>
+         
+          </div>
+          <button onClick={() => setIsActive(true)} className='fixed flex items-center justify-center w-[3rem] h-[3rem] bg-white z-20 right-0 mt-3 mr-3 lg:hidden rounded-full'>
+            <button className='relative w-6 h-6' ><Image layout='fill' src='/menu.svg'/></button>
+          </button>
+        <div className='fixed flex items-center justify-center h-[5rem] z-20 bottom-0 w-full lg:hidden'>
+          <div className='bg-white w-[50%] mx-auto flex items-center justify-center'>
+               <button id={backValue} className='navbtns' onClick={() => setCurrentPlanet(backValue)}>BACK</button> <span className='mx-4'>{currentPlanet}</span> 
+               <button id={nextValue} className='navbtns' onClick={() => setCurrentPlanet(nextValue)}>NEXT</button>
+          </div>
+        </div>
+        <canvas style={{position: 'fixed'}} id='canvas'></canvas>
+    </div>
+    
 
     </>
   )
