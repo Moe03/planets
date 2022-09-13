@@ -19,7 +19,7 @@ const planets = [
   {name: 'venus', size: earthSize * 0.944, positionX: -200, texture: 'venus.jpg'},
   {name: 'earth', size: earthSize, positionX: 0, texture: 'earth.jpg'},
   {name: 'mars', size: earthSize / 2, positionX: 200, texture: 'mars.jpg'},
-  {name: 'jupiter', size: earthSize * 11, positionX: 500, texture: 'jupiter.jpg', zoom: 400},
+  {name: 'jupiter', size: earthSize * 11, positionX: 550, texture: 'jupiter.jpg', zoom: 400},
   {name: 'saturn', size: 1, positionX: 1000, texture: 'earth.jpg', zoom: 400},
   {name: 'uranus', size: earthSize * 4, positionX: 1500, texture: 'uranus.jpg', zoom: 200},
   {name: 'neptune', size: earthSize * 3, positionX: 1800, texture: 'neptune.jpg', zoom: 200},
@@ -38,16 +38,16 @@ function Main() {
 
         // buttons navs
       for(let i = 0; i < buttons.length; i++) {
-          buttons[i].addEventListener('click', (event) => {
+          buttons[i].addEventListener('click', () => {
   
-              let chosenPlanet = event.target.id;
-          
-              updatePositionForCamera(50, eval(chosenPlanet), 0)
+              let chosenPlanet =  buttons[i].id;
+    
+              updatePositionForCamera(50, chosenPlanet, 0)
           })
       }
 
       const scene = new THREE.Scene()
-      const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 10000)
+      const camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 700)
       const renderer = new THREE.WebGLRenderer({
           canvas: document.querySelector('#canvas'),
           antialias: false
@@ -124,9 +124,9 @@ function Main() {
           if (saturnmodel) saturnmodel.rotation.x = 0.2;
         })
 
-        function updatePositionForCamera(zoom, object) {
-        
-            object = planetsObjects.filter(obj => Object.keys(obj).some(name => obj[name] == object.id))[0].object;
+        function updatePositionForCamera(zoom, searchVal) {
+ 
+            let object = planetsObjects.filter(obj => Object.keys(obj).some(name => obj[name] == searchVal))[0].object;
          
             let from = camera.position.clone();
             oldobject = oldobject ? oldobject : object
