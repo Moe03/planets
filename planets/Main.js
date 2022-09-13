@@ -217,8 +217,8 @@ function Main() {
     
     <div className='relative'>
           <div className='fixed w-full bg-white z-20 items-center justify-center hidden lg:flex'>
-            {planets.map((planet) => 
-                <button onClick={() => setCurrentPlanet(planet.name)} id={planet.name} className={`${planet.name == currentPlanet ? 'text-black': 'text-gray-500'} navbtns mx-2 px-2 py-2 hover:shadow hover:bg-gray-200`}>{planet.name}</button>
+            {planets.map((planet, index) => 
+                <button key={index} onClick={() => setCurrentPlanet(planet.name)} id={planet.name} className={`${planet.name == currentPlanet ? 'text-black': 'text-gray-500'} navbtns mx-2 px-2 py-2 hover:shadow hover:bg-gray-200`}>{planet.name}</button>
      
             )}
             <button className='relative w-6 h-6' onClick={() => setIsActive(true)}><Image layout='fill' src='/menu.svg'/></button>

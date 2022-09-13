@@ -16,9 +16,9 @@ function Menu(props) {
         <button onClick={() => setIsActive(false)} className='col-span-full relative w-8 h-8 bg-white rounded-full mx-auto'>
             <Image layout='fill' src={'/x.svg'} /> 
         </button>
-      {planets.map((planet) => 
+      {planets.map((planet, index) => 
       
-            <button onClick={() => {setCurrentPlanet(planet.name); setIsActive(false);}} id={planet.name} className='navbtns text-white relative flex flex-col jusitfy-center items-center border border-transparent rounded-lg hover:border-white'>
+            <button key={index} onClick={() => {setCurrentPlanet(planet.name); setIsActive(false);}} id={planet.name} className='navbtns text-white relative flex flex-col jusitfy-center items-center border border-transparent rounded-lg hover:border-white'>
               <div className='relative w-16 h-16  lg:w-20 lg:h-20'>
                 <Image id={planet.name} layout='fill' src={`/${planet.name}icon.svg`} />
               </div>
