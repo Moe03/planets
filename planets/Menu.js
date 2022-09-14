@@ -10,7 +10,7 @@ function Menu(props) {
   let setCurrentPlanet = props.setCurrentPlanet;
 
   return (
-    <div className={`${isActive ? 'translate-y-[0vh]' : 'translate-y-[-100vh]'} w-[100vw] h-[100vh] fixed z-50 bg-black duration-700 transition-all`}>
+    <div className={`${isActive ? 'translate-y-[0vh]' : 'translate-y-[-100vh]'} w-[100vw] h-[100vh] fixed z-50 bg-black duration-700 transition-all z-20 `}>
     <div className='w-full h-full flex flex-col justify-center items-center'>
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-2 w-[85%] lg:gap-5 lg:w-[50%] mx-auto text-white mb-5'>
         <button onClick={() => setIsActive(false)} className='col-span-full relative w-8 h-8 bg-white rounded-full mx-auto'>
