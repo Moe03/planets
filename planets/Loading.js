@@ -15,7 +15,7 @@ const spaceFax = [
 
 export default function Loading(props) {
 
-    let view = props.load == 1 ? 'opacity-0 z-0 ' : 'opacity-1 z-50 ';
+    let view = props.load == 1 ? ' translate-y-[100vh] fixed ' : ' fixed translate-y-[0] z-50 ';
 
     const [randomNum, setRandom] = useState('loading')
     
@@ -25,7 +25,7 @@ export default function Loading(props) {
 
   return (
     <>
-    <div className={'duration-1000 transition-all bg-black/90 z-50 fixed w-full h-full flex flex-col justify-center items-center text-white text-center ' + view }>
+    <div className={'duration-1000 transition-all bg-zinc-900 z-50 w-full h-full flex flex-col justify-center items-center text-white text-center ' + view }>
 
   
         <div className={'z-50 flex items-center justify-center font-[Inter] text-center transition-all duration-500 mb-4 ' + props.className}>
@@ -37,7 +37,7 @@ export default function Loading(props) {
         </div>
         <div className={'text-white text-2xl '}>Loading: {Math.round(props.load * 100)}%</div>
         {randomNum == 'loading' ? '' : 
-        <div className='w-[90%] mx-auto font-[Inter] mt-5'>
+        <div className='w-[90%] lg:w-[50%] mx-auto font-[Inter] mt-5'>
             <p className='text-xs mb-2'>DID YOU KNOW</p>
             <p className='text-sm mb-2'>{spaceFax[randomNum].title}</p>
             <p className='text-sm'>{spaceFax[randomNum].details}</p>
