@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Image from 'next/image';
 import Menu from '../planets/Menu'
+import Loading from './Loading';
 
 // Links
 const portfolioLink = 'https://moecodes.vercel.app';
@@ -12,7 +13,7 @@ const github = 'https://github.com/moe03';
 
 // Constants
 const earthSize = 10;
-const defaultZoom = 40
+const defaultZoom = 50
 
 const planets = [
   {name: 'mercury', size: earthSize / 3, positionX: -400, texture: 'mercury.jpg', zoom: 15},
@@ -29,12 +30,14 @@ function Main() {
 
   const [currentPlanet, setCurrentPlanet] = useState('earth');
   const [isActive, setIsActive] = useState(false);
+  const [loading, setLoading] = useState(0);
 
   const planetsArray = planets.map((planet) => planet.name);
 
     useEffect(() => {
 
       let buttons = document.getElementsByClassName('navbtns');
+
 
         // buttons navs
       for(let i = 0; i < buttons.length; i++) {
@@ -47,7 +50,7 @@ function Main() {
       }
 
       const scene = new THREE.Scene()
-      const camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 700)
+      const camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000)
       const renderer = new THREE.WebGLRenderer({
           canvas: document.querySelector('#canvas'),
           antialias: false
@@ -97,12 +100,21 @@ function Main() {
             // default zoom = 40
             let planetZoom =  planets[i].zoom ? planets[i].zoom : 40
         
-            newPlanet(planetName, planetSize, planetTexture, planetPosition, planetZoom)
+            newPlanet(planetName, planetSize, planetTexture, planetPosition, planetZoom);
           }
+
+          THREE.DefaultLoadingManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+            setLoading(itemsLoaded/itemsTotal); 
+          };
+    
+          THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+            setLoading(itemsLoaded/itemsTotal);
+          };
+      
         }
        
         addAllPlanets()
-    
+
         // special objects and planets:
 
         const earthClouds = new THREE.TextureLoader().load('clouds.jpg');
@@ -131,7 +143,7 @@ function Main() {
             let from = camera.position.clone();
             oldobject = oldobject ? oldobject : object
 
-            let to = {x: oldobject.position.x, y: oldobject.position.y, z: 500};
+            let to = {x: oldobject.position.x, y: oldobject.position.y, z: 800};
             let to2 = {x: object.position.x, y: object.position.y, z: object.zoom};
             let A = new TWEEN.Tween(from)
                 .to(to, 1500)
@@ -191,8 +203,8 @@ function Main() {
           }
 
           // Rotating all planet objects
-          earthCloudsScene.rotation.x += .0008;
-          earthCloudsScene.rotation.y += .001; 
+          earthCloudsScene.rotation.x +=  .0000002;
+          earthCloudsScene.rotation.y += .002; 
           if (saturnmodel) saturnmodel.rotation.y += 0.001;
 
           // Keeping light position in sync with camera.
@@ -213,6 +225,8 @@ function Main() {
     
   return (
     <>
+    <Loading load={loading} />
+  
     <Menu setCurrentPlanet={setCurrentPlanet} currentPlanet={currentPlanet} planets={planets} setIsActive={setIsActive} isActive={isActive} />
     
     <div className='relative'>

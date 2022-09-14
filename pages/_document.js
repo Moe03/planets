@@ -6,9 +6,9 @@ export default function Document() {
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin='true' />
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" /> 
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter&display=swap" rel="stylesheet" /> 
       </Head>
-      <body style={{ fontFamily: 'Bebas Neue'}} className='font-[Bebas-Neue]'>
+      <body style={{ fontFamily: 'Bebas Neue'}}>
         <Main />
         <NextScript />
       </body>
